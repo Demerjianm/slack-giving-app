@@ -1,0 +1,47 @@
+# https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+
+# anywhere with [] needs to be filled
+service: slack-giving-bot
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region:
+    us-west-2
+    # these are global env variable
+  environment:
+    PGDB: 'HI'
+
+
+functions:
+  instructions:
+    handler: instructions.main
+    events:
+      - http:
+          path: /
+          method: any
+          cors:
+            origin: '*'
+  register:
+    handler: register.main
+    events:
+      - http:
+          path: /register
+          method: any
+          cors:
+            origin: '*'
+  give:
+    handler: give.main
+    events:
+      - http:
+          path: /give
+          method: any
+          cors:
+            origin: '*'
+  balance:
+    handler: balance.main
+    events:
+      - http:
+          path: /balance
+          method: any
+          cors:
+            origin: '*'
