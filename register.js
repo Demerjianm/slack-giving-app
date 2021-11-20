@@ -1,20 +1,32 @@
-const { getVariable, handleList } = require("./utils");
+const { getVariable, handleList, checkValidAddress } = require("./utils");
 
 const main = async (event, context, callback) => {
   const body = event.body;
-  console.log('the body', body)
+  console.log("the body", body);
+  // get the username and public address out from slack message
   const userName = getVariable("user_name", body);
   const publicKey = getVariable("text", body);
-  console.log("the username", userName);
-  console.log("the publicKey", publicKey);
-  const res = await handleList(userName.value, publicKey.value);
+  // check if the moonbeam address is valid
+  const isValid = checkValidAddress(publicKey.value);
+  console.log("isValid", isValid);
+  if (isValid === false) {
+    callback(null, {
+      statusCode: 200,
+      body: "The public address provided is not valid!"
+    });
+  } else {
+    console.log("the username", userName);
+    console.log("the publicKey", publicKey);
+    // handle the username and publicKey in the database(s3 bucket)
+    const res = await handleList(userName.value, publicKey.value);
 
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: res,
-    }),
-  });
+    callback(null, {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: res
+      })
+    });
+  }
 };
 
 // Use this code if you don't use the http event with the LAMBDA-PROXY integration
