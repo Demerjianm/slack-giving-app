@@ -68,7 +68,7 @@ const getVariable = (variable = "text", text) => {
   return { variable, value: finalRes };
 };
 
-const getBalance = async address => {
+const getWalletBalance = async address => {
   const balance = web3.utils.fromWei(
     await web3.eth.getBalance(address),
     "ether"
@@ -82,12 +82,20 @@ const checkValidAddress = address => {
   return isValid;
 };
 
+const getUserBalance = async body => {
+  // get the username and public address out from slack message
+  const userName = getVariable("user_name", body);
+  const userData = await getUserFromList(userName.value);
+  return userData;
+};
+
 module.exports = {
   getVariable,
   getJsonObject,
   putObject,
   handleList,
-  getBalance,
+  getWalletBalance,
   checkValidAddress,
-  getUserFromList
+  getUserFromList,
+  getUserBalance
 };

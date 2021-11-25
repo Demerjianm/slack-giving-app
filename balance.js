@@ -1,22 +1,13 @@
-const { getVariable, getUserFromList, getBalance } = require("./utils");
-const gatherData = async body => {
-  // get the username and public address out from slack message
-  const userName = getVariable("user_name", body);
-  const userData = await getUserFromList(userName.value);
-  console.log({ userData });
-  return userData;
-};
+const { getWalletBalance, getUserBalance } = require("./utils");
 
-const main = async (event, context, callback) => {
+const main = async (event, _, callback) => {
   try {
     console.log("balance event", JSON.stringify(event, null, 2));
     const body = event.body;
     console.log("the body", body);
-    const userData = await gatherData(body);
+    const userData = await getUserBalance(body);
     const { balance, publicKey } = userData;
-
-    const walletBalance = await getBalance(publicKey);
-
+    const walletBalance = await getWalletBalance(publicKey);
     const response = {
       statusCode: 200,
       body: `Your wallet balance is: ${walletBalance}, you have $${balance} left to give this month!`
